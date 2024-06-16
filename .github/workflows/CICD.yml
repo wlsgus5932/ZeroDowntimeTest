@@ -75,7 +75,8 @@ jobs:
           script_stop: true
           script: |
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
-            sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
+            sudo docker run -d --name ${{ env.TARGET_UPSTREAM }} -p ${{ env.STOPPED_PORT }}:${{ env.STOPPED_PORT }} ${{ secrets.DOCKERHUB_USER
+          
       
       - name: Check deploy server URL
         uses: jtalk/url-health-check-action@v3
