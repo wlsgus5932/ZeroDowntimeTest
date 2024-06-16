@@ -1,4 +1,4 @@
-name: CICD
+name: Zero-downtime
 
 on:
   push:
