@@ -33,6 +33,6 @@ spring:
     activate:
       on-profile: green
 server:
-  port: 8081
+  port: 8080
   serverAddress: 43.202.133.109
 serverName: green-server
