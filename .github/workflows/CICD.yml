@@ -99,6 +99,7 @@ jobs:
           username: ubuntu
           host: ${{ secrets.LIVE_SERVER_IP }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          
           # script_stop: true
           # script: |
           #   sudo docker stop ${{env.CURRENT_UPSTREAM}}
