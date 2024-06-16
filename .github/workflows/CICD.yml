@@ -14,10 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
-        with:
+        with: 
           java-version: '17'
           distribution: 'temurin'
 
@@ -33,10 +32,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build Docker image
+      - name: Build Docker
         run: docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/live_server .
 
-      - name: Push Docker image
+      - name: Push Docker
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
         
   deploy:
@@ -65,8 +64,8 @@ jobs:
             echo "error"
             exit 1
           fi
-          
-      - name: Docker compose
+   
+      - name: Docker compose up
         uses: appleboy/ssh-action@master
         with:
           username: ubuntu
@@ -75,14 +74,13 @@ jobs:
           script_stop: true
           script: |
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
-            sudo docker run -d --name ${{ env.TARGET_UPSTREAM }} -p ${{ env.STOPPED_PORT }}:${{ env.STOPPED_PORT }} ${{ secrets.DOCKERHUB_USER
-          
-      
+            sudo docker-compose -f docker-compose-${{ env.TARGET_UPSTREAM }}.yml up -d
+
       - name: Check deploy server URL
         uses: jtalk/url-health-check-action@v3
         with:
-          url: http://${{ secrets.LIVE_SERVER_IP }}:${{env.STOPPED_PORT}}/env
-          max-attempts: 3
+          url: http://${{ secrets.LIVE_SERVER_IP }}:${{ env.STOPPED_PORT }}/env
+          max-attempts: 10
           retry-delay: 10s
 
       - name: Change nginx upstream
@@ -103,5 +101,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            sudo docker stop ${{env.CURRENT_UPSTREAM}}
-            sudo docker rm ${{env.CURRENT_UPSTREAM}}
+            sudo docker stop ${{ env.CURRENT_UPSTREAM }}
+            sudo docker rm ${{ env.CURRENT_UPSTREAM }}
