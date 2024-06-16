@@ -24,6 +24,8 @@ public class HealthCheckController {
 
     @GetMapping("/hc")
     public ResponseEntity<?> healthCheck() {
+        System.out.println("test");
+
         return ResponseEntity.ok(Map.of(
                 "env", env,
                 "port", port,
